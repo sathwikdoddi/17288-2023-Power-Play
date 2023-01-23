@@ -54,124 +54,6 @@ public class Antomes extends LinearOpMode
     SkystoneDeterminationPipeline pipeline;
 
 
-
-    // This is how the robot drives. Most likely you will not need to change it, but if it seems like the robot is not moving forward
-    // or backward properly, change it
-    public void drive (double distance, double speed){
-
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // Each motor is setup here. The first line initializes the encoder, the second takes in the speed value, and the third
-        // initializes the motor. Dont change anything here unless Carlos tells you to
-        backLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        backLeft.setPower(speed);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        frontLeft.setPower(speed);
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        backRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        backRight.setPower(speed);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        frontRight.setPower(speed);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while (frontRight.isBusy()){
-            telemetry.addData("frontRight",frontRight.getCurrentPosition());
-            telemetry.addData("frontLeft",frontLeft.getCurrentPosition());
-            telemetry.addData("backRight",backRight.getCurrentPosition());
-            telemetry.addData("backLeft",backLeft.getCurrentPosition());
-
-            telemetry.update();
-
-        }
-    }
-    //if this doesnt lift the arm try to replace clawMotor.setPower(speed); with clawMotor.setPower(-speed);
-    public void liftArm (double distance, double speed){
-        clawMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // Each motor is setup here. The first line initializes the encoder, the second takes in the speed value, and the third
-        // initializes the motor. Dont change anything here unless Carlos tells you to
-        clawMotor.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        clawMotor.setPower(speed);
-        clawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (clawMotor.isBusy()){
-
-        }
-    }
-    // This is how the robot strafes to the right. Probably wont need to change anything unless strafing goes wrong
-    public void strafeRight (double distance, double speed){
-
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        backLeft.setTargetPosition((int) (-distance * (537.7/12.5663706144)));
-        backLeft.setPower(speed);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        frontLeft.setPower(speed);
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        backRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        backRight.setPower(speed);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontRight.setTargetPosition((int) (-distance * (537.7/12.5663706144)));
-        frontRight.setPower(speed);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (frontRight.isBusy()){
-            telemetry.addData("frontRight",frontRight.getCurrentPosition());
-            telemetry.addData("frontLeft",frontLeft.getCurrentPosition());
-            telemetry.addData("backRight",backRight.getCurrentPosition());
-            telemetry.addData("backLeft",backLeft.getCurrentPosition());
-
-            telemetry.update();
-
-        }
-
-
-
-
-
-    }
-    // Same as strafeRight except left version
-    public void strafeLeft (double distance, double speed){
-
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        backLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        backLeft.setPower(speed);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setTargetPosition((int) (-distance * (537.7/12.5663706144)));
-        frontLeft.setPower(speed);
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        backRight.setTargetPosition((int) (-distance * (537.7/12.5663706144)));
-        backRight.setPower(speed);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-        frontRight.setPower(speed);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (frontRight.isBusy()){
-
-        }
-    }
-
     //Dont change anything below here until you see the next comment
     private Blinker expansion_Hub_2;
     private DcMotor backLeft;
@@ -184,6 +66,84 @@ public class Antomes extends LinearOpMode
     private DcMotor duckMotor;
     private DcMotor clawMotor;
     ElapsedTime timer = new ElapsedTime();
+
+    public void drive(int forward, double power) {
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+//        int frtarget = frontRight.getCurrentPosition() + forward;
+//        int fltarget = frontLeft.getCurrentPosition() + forward;
+//        int brtarget = backRight.getCurrentPosition() + forward;
+//        int bltarget = backLeft.getCurrentPosition() + forward;
+        frontRight.setTargetPosition(forward);
+        backRight.setTargetPosition(forward);
+        frontLeft.setTargetPosition(forward);
+        backLeft.setTargetPosition(forward);
+
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontRight.setPower(power);
+        backRight.setPower(power);
+        frontLeft.setPower(power);
+        backLeft.setPower(power);
+
+        while (frontRight.isBusy() && frontLeft.isBusy()) {
+            telemetry.addData("avg", pipeline.getAvg());
+            telemetry.addData("position", pipeline.getPosition());
+            telemetry.addData("FR", frontRight.getCurrentPosition());
+            telemetry.addData("FL", frontLeft.getCurrentPosition());
+            telemetry.update();
+        }
+
+        frontRight.setPower(0);
+        backRight.setPower(0);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+    }
+
+    public void strafe(int right, double power) {
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+//        int frtarget = frontRight.getCurrentPosition() + forward;
+//        int fltarget = frontLeft.getCurrentPosition() + forward;
+//        int brtarget = backRight.getCurrentPosition() + forward;
+//        int bltarget = backLeft.getCurrentPosition() + forward;
+        frontRight.setTargetPosition(right);
+        backRight.setTargetPosition(-right);
+        frontLeft.setTargetPosition(-right);
+        backLeft.setTargetPosition(right);
+
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontRight.setPower(power);
+        backRight.setPower(power);
+        frontLeft.setPower(power);
+        backLeft.setPower(power);
+
+        while (frontRight.isBusy() && frontLeft.isBusy()) {
+            telemetry.addData("avg", pipeline.getAvg());
+            telemetry.addData("position", pipeline.getPosition());
+            telemetry.addData("FR", frontRight.getCurrentPosition());
+            telemetry.addData("FL", frontLeft.getCurrentPosition());
+            telemetry.update();
+        }
+
+        frontRight.setPower(0);
+        backRight.setPower(0);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+    }
 
     @Override
     public void runOpMode()
@@ -208,9 +168,20 @@ public class Antomes extends LinearOpMode
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        duckMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        duckMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -238,9 +209,9 @@ public class Antomes extends LinearOpMode
             }
         });
 
-        int pos = pipeline.getPosition();
+
         telemetry.addData("avg", pipeline.getAvg());
-        telemetry.addData("position", pos);
+        telemetry.addData("position", pipeline.getPosition());
         telemetry.update();
 
         waitForStart();
@@ -254,7 +225,21 @@ public class Antomes extends LinearOpMode
             telemetry.addData("fL", frontLeft.getCurrentPosition());
             telemetry.addData("bR", backRight.getCurrentPosition());
             telemetry.addData("bL", backLeft.getCurrentPosition());
+
+            int pos = pipeline.getPosition();
             telemetry.update();
+            sleep(1500);
+            pos = pipeline.getPosition();
+            drive(800,0.3);
+            if (pos == 1) {
+                strafe(900, 0.3);
+            }
+            if (pos == 3) {
+                strafe(-900, 0.3);
+            }
+            break;
+
+
         }
     }
 
@@ -358,7 +343,7 @@ public class Antomes extends LinearOpMode
             if (avg1 < 160) {
                 return 3; // black
             } else if (avg1 < 220) {
-                return 1; // purple
+                return 1; // red
             } else {
                 return 2; // white
             }
