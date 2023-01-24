@@ -48,7 +48,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * the sample regions over the first 3 stones.
  */
 @Autonomous
-public class Antomes extends LinearOpMode
+public class ReferenceAuto extends LinearOpMode
 {
     OpenCvInternalCamera phoneCam;
     SkystoneDeterminationPipeline pipeline;
