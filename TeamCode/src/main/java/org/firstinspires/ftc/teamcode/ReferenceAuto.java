@@ -48,7 +48,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * the sample regions over the first 3 stones.
  */
 @Autonomous
-public class AntomesBuleVersinFarFromCarousel extends LinearOpMode
+public class ReferenceAuto extends LinearOpMode
 {
     OpenCvInternalCamera phoneCam;
     SkystoneDeterminationPipeline pipeline;
@@ -66,35 +66,19 @@ public class AntomesBuleVersinFarFromCarousel extends LinearOpMode
 
         // Each motor is setup here. The first line initializes the encoder, the second takes in the speed value, and the third
         // initializes the motor. Dont change anything here unless Carlos tells you to
-//        backLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-//        backLeft.setPower(speed);
-//        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        frontLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-//        frontLeft.setPower(speed);
-//        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        backRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-//        backRight.setPower(speed);
-//        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        frontRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
-//        frontRight.setPower(speed);
-//        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        backLeft.setTargetPosition((int) distance);
+        backLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
         backLeft.setPower(speed);
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontLeft.setTargetPosition((int) distance);
+        frontLeft.setTargetPosition((int) (distance * (537.7/12.5663706144)));
         frontLeft.setPower(speed);
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        backRight.setTargetPosition((int) distance);
+        backRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
         backRight.setPower(speed);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontRight.setTargetPosition((int) distance);
+        frontRight.setTargetPosition((int) (distance * (537.7/12.5663706144)));
         frontRight.setPower(speed);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -225,29 +209,19 @@ public class AntomesBuleVersinFarFromCarousel extends LinearOpMode
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         duckMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         clawMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         pipeline = new SkystoneDeterminationPipeline();
         phoneCam.setPipeline(pipeline);
 
-         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
         phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -263,136 +237,33 @@ public class AntomesBuleVersinFarFromCarousel extends LinearOpMode
 
             }
         });
-        telemetry.addData("position", pipeline.getPosition());
+
+        int pos = pipeline.getPosition();
         telemetry.addData("avg", pipeline.getAvg());
+        telemetry.addData("position", pos);
         telemetry.update();
+
         waitForStart();
 
         while (opModeIsActive())
         {
-            // From here the auto actually begins. BEFORE YOU START, HERE IS HOW TO SET UP THE ROBOT
-            // 1) The leftmost wheel should be aligned with the middle square, and the robot should be straight against the wall
-            // 2) Press 'initialize' on the autonomous, and press menu on the top left of the screen. Navigate to 'Camera Stream'
-            // 3) Click on 'Camera Stream,' and verify that the 3 rectangles on the screen are on top of the three squares on the field.
-            //    If they are not, the robot is either misaligned or the camera needs to be adjusted slightly.
-            // 4) Fully setup, you can run the auto now.
-
-            //IF YOU NEED TO EDIT ANYTHING, USE THE drive(distance,power) and strafeRight/Left(distance,power)
-            // TO MOVE. if it is only the distances, just edit it straight in the existing code.
-
-            //Play-by-play breakdown of the auto
-
-            // Setup the claw servos. If they are open when it starts, change to
-            // clawServo1.setPosition(.65);
-            // clawServo2.setPosition(0);
-            //           OR
-            //  clawServo1.setPosition(.3);
-            //  clawServo2.setPosition(.4);
-            int range = (19000-1000)+1;
-            int randomNum =(int) (Math.random()*range)+1000;
-
-
-//            clawServo1.setPosition(.65);
-//            clawServo2.setPosition(0);
-//            sleep(1000);
-//            int pos = pipeline.getPosition();
-            int pos = 2;
-            frontRight.setPower(.7);
-            frontLeft.setPower(.7);
-            backLeft.setPower(.7);
-            backRight.setPower(.7);
-            sleep(500);
-            frontRight.setPower(0);
-            frontLeft.setPower(0);
-            backLeft.setPower(0);
-            backRight.setPower(0);
-
-
-            sleep(2000);
-
-            if (pos == 1) {
-                frontRight.setPower(.3);
-                frontLeft.setPower(-.3);
-                backLeft.setPower(.3);
-                backRight.setPower(-.3);
-                sleep(200);
-                frontRight.setPower(0);
-                frontLeft.setPower(0);
-                backLeft.setPower(0);
-                backRight.setPower(0);
-            }
-            sleep(1000);
-            if (pos == 3) {
-                frontRight.setPower(-.3);
-                frontLeft.setPower(.3);
-                backLeft.setPower(-.3);
-                backRight.setPower(.3);
-                sleep(200);
-                frontRight.setPower(0);
-                frontLeft.setPower(0);
-                backLeft.setPower(0);
-                backRight.setPower(0);
-            }
-
             telemetry.addData("avg", pipeline.getAvg());
-            telemetry.addData("position", pos);
+            telemetry.addData("position", pipeline.getPosition());
+
+            telemetry.addData("fR", frontRight.getCurrentPosition());
+            telemetry.addData("fL", frontLeft.getCurrentPosition());
+            telemetry.addData("bR", backRight.getCurrentPosition());
+            telemetry.addData("bL", backLeft.getCurrentPosition());
             telemetry.update();
-
-            sleep (5000);
-            break;
-
-            //            if (pipeline.getPosition() == 1) {
-//                strafeLeft(12, 0.2);
-//            } else if (pipeline.getPosition() == 3) {
-//                strafeRight(12, 0.2);
-//            }
-            //sleeps for 1 second to fully close before continuing
-
-
-//            if (pipeline.position == SkystoneDeterminationPipeline.SkystonePosition.LEFT) {
-//
-//                break;
-//
-//
-//            }
-//            else if (pipeline.position == SkystoneDeterminationPipeline.SkystonePosition.CENTER) {
-//
-//                break;
-//            }
-//            else if (pipeline.position == SkystoneDeterminationPipeline.SkystonePosition.RIGHT) {
-//
-//                break;
-//            }
-//            else{
-//
-//                break;
-//            }
-
-
-
-
-            // Don't burn CPU cycles busy-looping in this sample
         }
     }
 
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline
     {
-        public enum SkystonePosition
-        {
-            LEFT,
-            CENTER,
-            RIGHT
-        }
-
-        /*
-         * Some color constants
-         */
         static final Scalar BLUE = new Scalar(0, 0, 255);
 
-        /*
-         * The core values which define the location and size of the sample regions
-         */
         static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(230,98);
+
         static final int REGION_WIDTH = 20;
         static final int REGION_HEIGHT = 20;
 
@@ -419,51 +290,32 @@ public class AntomesBuleVersinFarFromCarousel extends LinearOpMode
         Point region1_pointB = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
                 REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-//        Point region2_pointA = new Point(
-//                REGION2_TOPLEFT_ANCHOR_POINT.x,
-//                REGION2_TOPLEFT_ANCHOR_POINT.y);
-//        Point region2_pointB = new Point(
-//                REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-//                REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-//        Point region3_pointA = new Point(
-//                REGION3_TOPLEFT_ANCHOR_POINT.x,
-//                REGION3_TOPLEFT_ANCHOR_POINT.y);
-//        Point region3_pointB = new Point(
-//                REGION3_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-//                REGION3_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
-        /*
-         * Working variables
-         */
         Mat region1_Cb;
         Mat YCrCb = new Mat();
         Mat Cb = new Mat();
         int avg1;
 
-        // Volatile since accessed by OpMode thread w/o synchronization
-        private volatile SkystonePosition position = SkystonePosition.LEFT;
-
-        /*
-         * This function takes the RGB frame, converts to YCrCb,
-         * and extracts the Cb channel to the 'Cb' variable
-         */
         void inputToCb(Mat input)
         {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb, Cb, 2);
+            Core.extractChannel(YCrCb, Cb, 0);
         }
 
         @Override
         public void init(Mat firstFrame)
         {
             inputToCb(firstFrame);
+
             region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
         }
 
         @Override
         public Mat processFrame(Mat input)
         {
+
             inputToCb(input);
+
             avg1 = (int) Core.mean(region1_Cb).val[0];
 
             Imgproc.rectangle(
@@ -473,18 +325,39 @@ public class AntomesBuleVersinFarFromCarousel extends LinearOpMode
                     BLUE, // The color the rectangle is drawn in
                     2); // Thickness of the rectangle lines
 
+            if (avg1 < 50) {
+                Imgproc.rectangle(
+                        input, // Buffer to draw on
+                        region1_pointA, // First point which defines the rectangle
+                        region1_pointB, // Second point which defines the rectangle
+                        new Scalar(0,0,0), // The color the rectangle is drawn in
+                        -1);
+            } else if (avg1 < 150) {
+                Imgproc.rectangle(
+                        input, // Buffer to draw on
+                        region1_pointA, // First point which defines the rectangle
+                        region1_pointB, // Second point which defines the rectangle
+                        new Scalar(255,0,0), // The color the rectangle is drawn in
+                        -1);
+            } else {
+                Imgproc.rectangle(
+                        input, // Buffer to draw on
+                        region1_pointA, // First point which defines the rectangle
+                        region1_pointB, // Second point which defines the rectangle
+                        new Scalar(255,255,255), // The color the rectangle is drawn in
+                        -1);
+            }
+
             return input;
         }
 
-        public SkystonePosition getAnalysis()
-        {
-            return position;
+        public int getAvg() {
+            return avg1;
         }
-        public int getAvg() {return avg1;}
         public int getPosition() {
-            if (avg1 < 50) {
+            if (avg1 < 160) {
                 return 3; // black
-            } else if (avg1 < 140) {
+            } else if (avg1 < 220) {
                 return 1; // red
             } else {
                 return 2; // white
