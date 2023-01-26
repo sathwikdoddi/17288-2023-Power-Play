@@ -11,7 +11,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class PowerPlayDetection extends OpenCvPipeline {
     final Scalar BLUE = new Scalar(0, 0, 255);
 
-    final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(230,98);
+    final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(130,200);
 
     final int REGION_WIDTH = 20;
     final int REGION_HEIGHT = 20;
