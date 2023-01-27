@@ -9,89 +9,71 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class PowerPlayDetection extends OpenCvPipeline {
-    final Scalar BLUE = new Scalar(0, 0, 255);
+    final Scalar RED = new Scalar(255, 0, 0);
+    final Scalar BLACK = new Scalar(0, 0, 0);
+    final Scalar WHITE = new Scalar(255, 255, 255);
 
-    final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(130,200);
+    int position;
 
-    final int REGION_WIDTH = 20;
-    final int REGION_HEIGHT = 20;
+    final Point CONE_TOP_LEFT_ANCHOR_POINT = new Point(130,200);
 
-    Point region1_pointA = new Point(
-            REGION1_TOPLEFT_ANCHOR_POINT.x,
-            REGION1_TOPLEFT_ANCHOR_POINT.y);
-    Point region1_pointB = new Point(
-            REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-            REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+    Point cone_pointA = new Point(CONE_TOP_LEFT_ANCHOR_POINT.x, CONE_TOP_LEFT_ANCHOR_POINT.y);
+    Point cone_pointB = new Point(
+            CONE_TOP_LEFT_ANCHOR_POINT.x + 20, // adding region width
+            CONE_TOP_LEFT_ANCHOR_POINT.y + 20); // adding region height
+
+    // Create points for left and right pole alignment autos to create submats for detection
 
     Mat region1_Cb;
     Mat YCrCb = new Mat();
     Mat Cb = new Mat();
-    int avg1;
+    int avgConeCb;
 
-    void inputToCb(Mat input)
-    {
+    void inputToCb(Mat input) {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
         Core.extractChannel(YCrCb, Cb, 0);
     }
 
     @Override
-    public void init(Mat firstFrame)
-    {
+    public void init(Mat firstFrame) {
         inputToCb(firstFrame);
+        region1_Cb = Cb.submat(new Rect(cone_pointA, cone_pointB));
+        // create submats for a pole alignment on both the right and left
 
-        region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
+        /*
+            Properly implement YCrCb for a more accurate alignment
+            channel 0 => Y
+            channel 1 => Cr
+            channel 2 => Cb
+
+            Telemetry all 3 channels and find out where yellow can be tracked the best and maybe even fix our regular autonomous to be more accurate.
+
+            processFrame for all these submats and create Core.mean int values for YCrCb for each input
+            use ImgProcs to highlight the pole yellow if detected and green if not based on YCrCb
+         */
     }
 
     @Override
-    public Mat processFrame(Mat input)
-    {
-
+    public Mat processFrame(Mat input) {
         inputToCb(input);
+        avgConeCb = (int) Core.mean(region1_Cb).val[0];
 
-        avg1 = (int) Core.mean(region1_Cb).val[0];
-
-        Imgproc.rectangle(
-                input,
-                region1_pointA,
-                region1_pointB,
-                BLUE,
-                2);
-
-        if (avg1 < 50) {
-            Imgproc.rectangle(
-                    input,
-                    region1_pointA,
-                    region1_pointB,
-                    new Scalar(0,0,0),
-                    -1);
-        } else if (avg1 < 150) {
-            Imgproc.rectangle(
-                    input,
-                    region1_pointA,
-                    region1_pointB,
-                    new Scalar(255,0,0),
-                    -1);
+        if (avgConeCb < 50) {
+            position = 3;
+            Imgproc.rectangle(input, cone_pointA, cone_pointB, BLACK, -1);
+        } else if (avgConeCb < 150) {
+            position = 1;
+            Imgproc.rectangle(input, cone_pointA, cone_pointB, RED, -1);
         } else {
-            Imgproc.rectangle(
-                    input,
-                    region1_pointA,
-                    region1_pointB,
-                    new Scalar(255,255,255),
-                    -1);
+            position = 2;
+            Imgproc.rectangle(input, cone_pointA, cone_pointB, WHITE, -1);
         }
         return input;
     }
-
     public int getAvg() {
-        return avg1;
+        return avgConeCb;
     }
     public int getPosition() {
-        if (avg1 < 50) {
-            return 3; // black
-        } else if (avg1 < 150) {
-            return 1; // red
-        } else {
-            return 2; // white
-        }
+        return position;
     }
 }
