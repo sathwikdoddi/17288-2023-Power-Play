@@ -17,6 +17,8 @@ public class VSCC {
     OpenCvInternalCamera phoneCam;
     PowerPlayDetection cameraPipeline;
 
+    // make getPosition() and getAvg() methods here
+
     LinearOpMode opMode;
     HardwareMap hwMap;
 
@@ -48,6 +50,12 @@ public class VSCC {
             public void onError(int errorCode) {}
         });
     }
+    public int getPosition() {
+        return cameraPipeline.getPosition();
+    }
+    public int getCb() {
+        return cameraPipeline.getCb();
+    }
     public void slideUp(int amount, double power) {
         int vSTarget = vS.getCurrentPosition() + amount;
         vS.setTargetPosition(vSTarget);
@@ -71,11 +79,11 @@ public class VSCC {
         }
         vS.setPower(0);
     }
-    public void openClaw() {
+    public void closeClaw() {
         CS1.setPosition(0);
         CS2.setPosition(0.2);
     }
-    public void closeClaw() {
+    public void openClaw() {
         CS1.setPosition(0.02);
         CS2.setPosition(0);
     }

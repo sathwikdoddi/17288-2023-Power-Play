@@ -70,7 +70,7 @@ public class PowerPlayDetection extends OpenCvPipeline {
         }
         return input;
     }
-    public int getAvg() {
+    public int getCb() {
         return avgConeCb;
     }
     public int getPosition() {
