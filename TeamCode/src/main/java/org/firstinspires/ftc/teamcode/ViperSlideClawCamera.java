@@ -10,7 +10,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-public class VSCC {
+public class ViperSlideClawCamera {
     private DcMotor vS;
     private Servo CS1;
     private Servo CS2;
@@ -22,7 +22,7 @@ public class VSCC {
     LinearOpMode opMode;
     HardwareMap hwMap;
 
-    public VSCC(LinearOpMode opMode, HardwareMap hardwareMap) {
+    public ViperSlideClawCamera(LinearOpMode opMode, HardwareMap hardwareMap) {
         this.opMode = opMode;
         hwMap = hardwareMap;
 
@@ -53,20 +53,8 @@ public class VSCC {
     public int getPosition() {
         return cameraPipeline.getPosition();
     }
-    public int getCb() {
-        return cameraPipeline.getCb();
-    }
-    public void slideUp(int amount, double power) {
-        int vSTarget = vS.getCurrentPosition() + amount;
-        vS.setTargetPosition(vSTarget);
-        vS.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        vS.setPower(power);
-
-        while (vS.isBusy()) {
-            opMode.telemetry.addData("Viper Slide", vS.getCurrentPosition());
-            opMode.telemetry.update();
-        }
-        vS.setPower(0);
+    public int getAvgConeY() {
+        return cameraPipeline.getAvgConeY();
     }
     public void slideTo(int amount, double power) {
         vS.setTargetPosition(amount);

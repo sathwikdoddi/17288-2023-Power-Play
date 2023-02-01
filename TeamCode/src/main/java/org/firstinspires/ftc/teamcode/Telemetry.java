@@ -9,7 +9,7 @@ public class Telemetry extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        VSCC vscc = new VSCC(this, hardwareMap);
+        ViperSlideClawCamera vscc = new ViperSlideClawCamera(this, hardwareMap);
         vscc.initializeCamera();
 
         waitForStart();
@@ -18,7 +18,7 @@ public class Telemetry extends LinearOpMode {
             sleep(300);
             int position = vscc.getPosition();
             telemetry.addData("Position", position);
-            telemetry.addData("Cb", vscc.getCb());
+            telemetry.addData("Cone Y", vscc.getAvgConeY());
             telemetry.update();
         }
     }

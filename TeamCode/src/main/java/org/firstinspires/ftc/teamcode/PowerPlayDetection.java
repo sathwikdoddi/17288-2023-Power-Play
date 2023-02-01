@@ -24,20 +24,20 @@ public class PowerPlayDetection extends OpenCvPipeline {
 
     // Create points for left and right pole alignment autos to create submats for detection
 
-    Mat region1_Cb;
+    Mat coneRegion_Y;
     Mat YCrCb = new Mat();
-    Mat Cb = new Mat();
-    int avgConeCb;
+    Mat Y = new Mat();
+    int avgConeY;
 
     void inputToCb(Mat input) {
         Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-        Core.extractChannel(YCrCb, Cb, 0);
+        Core.extractChannel(YCrCb, Y, 0);
     }
 
     @Override
     public void init(Mat firstFrame) {
         inputToCb(firstFrame);
-        region1_Cb = Cb.submat(new Rect(cone_pointA, cone_pointB));
+        coneRegion_Y = Y.submat(new Rect(cone_pointA, cone_pointB));
         // create submats for a pole alignment on both the right and left
 
         /*
@@ -56,12 +56,12 @@ public class PowerPlayDetection extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         inputToCb(input);
-        avgConeCb = (int) Core.mean(region1_Cb).val[0];
+        avgConeY = (int) Core.mean(coneRegion_Y).val[0];
 
-        if (avgConeCb < 50) {
+        if (avgConeY < 50) {
             position = 3;
             Imgproc.rectangle(input, cone_pointA, cone_pointB, BLACK, -1);
-        } else if (avgConeCb < 150) {
+        } else if (avgConeY < 150) {
             position = 1;
             Imgproc.rectangle(input, cone_pointA, cone_pointB, RED, -1);
         } else {
@@ -70,8 +70,8 @@ public class PowerPlayDetection extends OpenCvPipeline {
         }
         return input;
     }
-    public int getCb() {
-        return avgConeCb;
+    public int getAvgConeY() {
+        return avgConeY;
     }
     public int getPosition() {
         return position;

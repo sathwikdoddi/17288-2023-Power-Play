@@ -10,7 +10,7 @@ public class RightSideAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
         Drivetrain dt = new Drivetrain(this, hardwareMap);
-        VSCC vscc = new VSCC(this, hardwareMap);
+        ViperSlideClawCamera vscc = new ViperSlideClawCamera(this, hardwareMap);
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.startTime();
@@ -21,9 +21,13 @@ public class RightSideAuto extends LinearOpMode {
         while (opModeIsActive()) {
             vscc.closeClaw();
             int position = vscc.getPosition();
-            dt.wait(500);
-            position = vscc.getPosition();
-            int cb = vscc.getCb();
+            int coneY = vscc.getAvgConeY();
+
+            runtime.reset();
+            while (runtime.milliseconds() < 500) {
+                position = vscc.getPosition();
+                coneY = vscc.getAvgConeY();
+            }
 
             vscc.slideTo(500,0.7);
             dt.wait(300);
@@ -45,9 +49,9 @@ public class RightSideAuto extends LinearOpMode {
             dt.piddrive(-740);
             dt.turn(90, 0.2,"left");
             dt.piddrive(-70);
-            dt.strafe(395,0.3,"left");
+            dt.strafe(410,0.3,"left");
             vscc.slideTo(3950,0.7);
-            dt.piddrive(100);
+            dt.piddrive(120);
             vscc.openClaw();
             dt.wait(300);
             dt.piddrive(-150);
@@ -61,7 +65,7 @@ public class RightSideAuto extends LinearOpMode {
             }
 
             telemetry.addData("Position", position);
-            telemetry.addData("Cb",cb);
+            telemetry.addData("Cone Y", coneY);
             telemetry.update();
 
             dt.wait(6000);

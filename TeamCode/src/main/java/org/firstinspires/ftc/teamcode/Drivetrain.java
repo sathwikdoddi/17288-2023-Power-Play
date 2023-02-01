@@ -207,6 +207,48 @@ public class Drivetrain {
         bL.setPower(0);
         bR.setPower(0);
     }
+    public void pidstrafe(int amount, String direction) {
+        fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        fL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        double kp = 1 / 300.0;
+
+        if (direction.equals("right")) {
+            fL.setTargetPosition(amount);
+            fR.setTargetPosition(-amount);
+            bL.setTargetPosition(-amount);
+            bR.setTargetPosition(amount);
+        } else if (direction.equals("left")) {
+            fL.setTargetPosition(-amount);
+            fR.setTargetPosition(amount);
+            bL.setTargetPosition(amount);
+            bR.setTargetPosition(-amount);
+        }
+
+        double error1 = fL.getTargetPosition() - fL.getCurrentPosition();
+        double error2 = fR.getTargetPosition() - fR.getCurrentPosition();
+
+        while (Math.abs(error1) > 15 && Math.abs(error2) > 15) {
+            error1 = fL.getTargetPosition() - fL.getCurrentPosition();
+            error2 = fR.getTargetPosition() - fR.getCurrentPosition();
+            fL.setPower(kp * (fL.getTargetPosition() - fL.getCurrentPosition()));
+            fR.setPower(kp * (fR.getTargetPosition() - fR.getCurrentPosition()));
+            bL.setPower(kp * (bL.getTargetPosition() - bL.getCurrentPosition()));
+            bR.setPower(kp * (bR.getTargetPosition() - bR.getCurrentPosition()));
+        }
+
+        fL.setPower(0);
+        fR.setPower(0);
+        bL.setPower(0);
+        bR.setPower(0);
+    }
     public void wait(int ms) {
         ElapsedTime t = new ElapsedTime();
         t.startTime();
